@@ -2,8 +2,89 @@
 
 ## Table of Contends
 
+- [🚀 AWS Services](#-aws-services)
 - [🐳 Docker Usage and Key Concepts](#-docker-usage-and-key-concepts)
 - [🏗️ Terraform](#-terraform)
+
+# 🚀 AWS Services
+
+## 🔐 **AWS Console and Access Management**
+
+* **Login URL**: https://us-east-2.console.aws.amazon.com/console/home?nc2=h_si&region=us-east-2&src=header-signin#
+* In the top bar, you can select regions, which correspond to AWS datacenters. Usually, AWS allocates us to the closest region, but it's possible to choose other available locations. However, there may be differences in available products and service prices. Ohio region is a good choice.
+* Also in the top bar, you can click on your username and check the billing dashboard and your access keys;
+* AWS access keys allow you to access your AWS account without needing your username and password;
+* When a user is created in AWS, they are considered the root user. From this user, it's possible to create other users with specific accesses. A security practice is to avoid creating access keys for the main administrator user, creating them only for other users;
+* After creating them, it's better to download as .csv, mainly because the secret access key is only visible once;
+* It's also a good practice to deactivate the key when you're not using it.
+
+## 🖥️ **EC2 (Elastic Compute Cloud)**
+
+* **AMI** = Machine Image
+* Steps to create a virtual machine in EC2:
+  * Software Configuration (operating system, e.g., Linux)
+  * Hardware Configuration (memory, RAM...)
+  * Access Key Configuration (create new key pair > RSA > .pem)
+  * Network Configuration (to communicate with other machines)
+  * Storage Configuration + Additional disks
+  * Optional: additional details (like restart in case of failures, monitoring...)
+* To create key pairs that allow access to instances, go to the left sidebar in EC2, scroll down to Network & Security > Key Pairs > Create Key Pair > Select RSA and .pem >
+* Interestingly, when I click on a running instance, there's a "Connect" button that shows how I can remotely access the instance via terminal; (If you have the access key and the security group is correctly defined, in the first tab after clicking connect and clicking again, a browser page appears with a terminal for the instance!)
+* An instance created without a registered key pair cannot be accessed remotely, and it's not possible to add this configuration later.
+* Every EC2 is associated with a security group (at least one is created when the account is created). In the lower part of the EC2 interface, there are Inbound Rules and Outbound Rules options, which are associated with a security group (usually I don't need to configure these parameters manually, AWS has default values, HOWEVER, these default values don't allow remote connection to instances, so it's better to configure them).
+* **TO CONFIGURE SECURITY TO ALLOW CONNECTION IN THE INTERFACE**: Instance page > scroll down to the bottom panel > Security > Security Group ID > click on the ID box that appears > Edit inbound rules > Add rule > Type: SSH, Source: Anywhere-IPv4 > Save rules.
+
+## 🌐 **VPC (Virtual Private Cloud)**
+
+* Whenever an account is created in AWS, a VPC is also created.
+* Every EC2 resource is obligatorily within a VPC.
+* Within a VPC, it's possible to configure subnets (and they are also created, but can be configured). Each subnet also has an IP range.
+* For a machine to communicate, it needs to be in a network of machines.
+* Is it also related to Security Groups?
+
+## 📦 **S3 (Simple Storage Service)**
+
+* Every time I create a bucket in S3, which consequently allows me to store my data, this bucket must have a unique name across the entire Amazon service. At least if it's destroyed, it becomes available again.
+* Although EC2 stores files, the cost of this is much higher compared to S3.
+
+## 🐳 **Elastic Container Service (ECS)**
+
+* Container Orchestration in the cloud.
+* I need to create a cluster to create containers.
+* After creating a cluster, it can be configured as a Service or a Task, which in turn can be created when we click on "" OR "Run Task" > "Task Definition" > "Task Definitions" > "Create New Task Definition" > , respectively.
+
+#### **Resource - ALB (Application Load Balancer)**
+* Load balancing service offered by AWS, designed for modern microservices-based applications, with support for HTTP and HTTPS protocols;
+* To summarize better, it helps with servers/sites that multiple people will use.
+* Frequently, the ALB's target groups will be containers we want to create, and there's also the whole issue of listener definition to connect the two.
+* Once I have an application available with the ALB DNS, I can access it from alb_dns_name.aws.amazon.com. To personalize the site address, it's possible to use the Route 53 service, also from AWS, but completely paid.
+
+## ⚡ **AWS Fargate**
+
+* It's a serverless/infrastructure-less solution.
+* It can be used when creating clusters in AWS without the person needing to define infrastructure, but it's also a more expensive service than others that use infrastructure.
+
+## 📊 **CloudWatch**
+
+* Monitoring service for other AWS services;
+
+## 👤 **IAM (Identity and Access Management)**
+
+* Service to create security users in AWS, completely free.
+* In translation, Role = Function.
+* To create: in the sidebar Access Management > Roles > Create Role > AWS Service (a role that will be used internally for communication between AWS services) > Select Use Case (e.g., Elastic Container Service) > should appear more specific use options (e.g., Elastic Container Service Task) > Permission Policies (e.g., AmazonECS_FullAccess + AmazonECSTaskExecutionRolePolicy + AmazonS3FullAccess) > Create role name (e.g., ecsTaskExecutionRole).
+
+## 📈 **EMR (Elastic Map Reduce)**
+
+* Originally, creating an Apache Spark cluster and other similar services can be quite laborious; using Amazon EMR makes it much easier, especially since it requires having robust machines.
+* It's a completely charged service; in billing, it's the cost of Hardware (EC2) and Software (EMR), and it has to be good hardware...
+* There's also a serverless version with even fewer configurations.
+* It's a type of service that requires two layers of security, one internal (IAM) and one external (Security Group), since the cluster will be available on the internet.
+* The cost of Amazon EMR is composed of several components:
+  - EC2 Instance Cost: You pay for the instances you use, with various types to choose from.
+  - Storage Cost: This includes data storage in S3 or local storage instances.
+  - Data Transfer Fees: If you transfer data outside AWS, this incurs additional costs.
+  - Other fees: Some additional frameworks or applications may have extra costs.
 
 # 🐳 **Docker Usage and Key Concepts**
 
